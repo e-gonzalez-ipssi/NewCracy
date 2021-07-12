@@ -7,7 +7,7 @@ use App\Entity\User;
 use Illuminate\Http\Request;
 use Exception;
 
-class PropositionApi extends Api
+class PostApi extends Api
 {
     private const NO_RIGHT = 1;
     private const IS_ADMIN = 2;
@@ -87,14 +87,14 @@ class PropositionApi extends Api
             [
                 ["organisation", REQUIRED, TYPE_INT, $request->input('organisation')],
                 ["title", REQUIRED, TYPE_STRING, $request->input('title')],
-                ["description", NOT_REQUIRED, TYPE_STRING, $request->input('description'), ""],
+                ["content", NOT_REQUIRED, TYPE_STRING, $request->input('content'), ""],
                 ["tags", NOT_REQUIRED, TYPE_STRING, $request->input('tags'), ""]
             ],
             self::IS_ORG_MEMBER
         );
 
         $org = $this->orgService->getOrganisationById($params['organisation']);
-        $this->propositionService->createProposition($org, $this->me, $params['title'], $params['description'], $params['tags']);
+        $this->propositionService->createProposition($org, $this->me, $params['title'], $params['content'], $params['tags']);
         return $this->returnOutput($this->ack());
     }
 
@@ -202,11 +202,11 @@ class PropositionApi extends Api
 
         $return["like"] = [
             "number" => $like,
-            "users" => $usersLike,
+            "User" => $usersLike,
         ];
         $return["dislike"] = [
             "number" => $dislike,
-            "users" => $usersDislike,
+            "User" => $usersDislike,
         ];
 
         return $this->returnOutput($return);

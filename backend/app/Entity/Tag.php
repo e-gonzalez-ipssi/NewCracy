@@ -5,12 +5,12 @@ namespace App\Entity;
 class Tag {
 
     private int $id;
-    private string $name;
+    private string $tagsName;
 
-    public function __construct(int $id, string $name)
+    public function __construct(int $id, string $tagsName)
     {
         $this->id = $id;
-        $this->name = $name;
+        $this->tagsName = $tagsName;
     }
 
     public function getId(): int {
@@ -18,11 +18,11 @@ class Tag {
     }
 
     public function getName(): string {
-        return $this->name;
+        return $this->tagsName;
     }
 
-    public function setName(string $name) {
-        $this->name = $name;
+    public function setName(string $tagsName) {
+        $this->tagsName = $tagsName;
     }
 
     public function arrayify(): array {

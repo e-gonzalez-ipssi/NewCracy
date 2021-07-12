@@ -4,41 +4,45 @@
 
 
 #------------------------------------------------------------
-# Table: Utilisateur
+# Table: Users
 #------------------------------------------------------------
 
-CREATE TABLE Utilisateur(
-        id     Int  Auto_increment PRIMARY KEY NOT NULL ,
-        nom    Varchar (50) NOT NULL ,
-        prenom Varchar (50) NOT NULL ,
-        mail   Varchar (50) NOT NULL ,
-        tel    Varchar (50),
-        mdp    Varchar (255) NOT NULL ,
-        photo  Varchar (50),
-        isAdmin Boolean NOT NUll ,
-        token Varchar (255) 
+CREATE TABLE Users(
+        id          Int  Auto_increment PRIMARY KEY NOT NULL ,
+        firstName   Varchar (50) NOT NULL ,
+        lastName    Varchar (50) NOT NULL ,
+        mail        Varchar (50) NOT NULL ,
+        phone       Varchar (50),
+        pwd         Varchar (255) NOT NULL ,
+        img         Varchar (50),
+        isAdmin     Boolean NOT NUll ,
+        token       Varchar (255) 
 );
 
 #------------------------------------------------------------
-# Table: Organisation
+# Table: Organization
 #------------------------------------------------------------
 
-CREATE TABLE Organisation(
+CREATE TABLE Organization(
         id          Int  Auto_increment PRIMARY KEY NOT NULL ,
-        nom         Varchar (50) NOT NULL ,
-        description Varchar (50) NOT NULL ,
-        lienSite    Varchar (50) NOT NULL
+        orgName     Varchar (50) NOT NULL ,
+        content     Varchar (50) NOT NULL ,
+        orgUrl      Varchar (50) NOT NULL,
+        orgMail     Varchar (50),
+        phone       Varchar (50) ,
+        backImg     Varchar (50)
 );
 
 
 #------------------------------------------------------------
-# Table: Proposition
+# Table: Post
 #------------------------------------------------------------
 
-CREATE TABLE Proposition(
+CREATE TABLE Post(
         id          Int  Auto_increment PRIMARY KEY NOT NULL ,
-        nom         Varchar (50) NOT NULL ,
-        description Varchar (50) NOT NULL ,
+        title       Varchar (50) NOT NULL ,
+        content     Varchar (50) NOT NULL ,
+        img         Varchar (50),
         date        int NOT NULL
 );
 
@@ -47,21 +51,21 @@ CREATE TABLE Proposition(
 #------------------------------------------------------------
 
 CREATE TABLE Tags(
-        id          Int  Auto_increment PRIMARY KEY NOT NULL ,
-        nom         Varchar (50) NOT NULL,
-        id_Organisation          Int NOT NULL ,
-        FOREIGN KEY (id_Organisation) REFERENCES Organisation(id)
+        id               Int  Auto_increment PRIMARY KEY NOT NULL ,
+        tagsName         Varchar (50) NOT NULL,
+        id_Organization  Int NOT NULL ,
+        FOREIGN KEY (id_Organization) REFERENCES Organization(id)
 );
 
 #------------------------------------------------------------
-# Table: PropositionTags
+# Table: PostTags
 #------------------------------------------------------------
 
-CREATE TABLE PropositionTags (
-        id_Proposition Int NOT NULL ,
-        id Int NOT NULL,
-    FOREIGN KEY (id_Proposition) REFERENCES Proposition(id),
-    FOREIGN KEY (id) REFERENCES Tags(id)
+CREATE TABLE PostTags (
+        id_Post Int NOT NULL ,
+        id_Tags Int NOT NULL,
+    FOREIGN KEY (id_Post) REFERENCES Post(id),
+    FOREIGN KEY (id_Tags) REFERENCES Tags(id)
 );
 
 
@@ -71,10 +75,10 @@ CREATE TABLE PropositionTags (
 #------------------------------------------------------------
 
 CREATE TABLE OrgMember (
-        id_Organisation Int NOT NULL ,
-        id_Utilisateur Int NOT NULL,
-    FOREIGN KEY (id_Utilisateur) REFERENCES Utilisateur(id),
-    FOREIGN KEY (id_Organisation) REFERENCES Organisation(id)
+        id_Organization Int NOT NULL ,
+        id_Users Int NOT NULL,
+    FOREIGN KEY (id_Users) REFERENCES Users(id),
+    FOREIGN KEY (id_Organization) REFERENCES Organization(id)
 ); 
 
 #------------------------------------------------------------
@@ -82,71 +86,70 @@ CREATE TABLE OrgMember (
 #------------------------------------------------------------
 
 CREATE TABLE OrgAdmin (
-        id_Organisation Int NOT NULL ,
-        id_Utilisateur Int NOT NULL,
-    FOREIGN KEY (id_Utilisateur) REFERENCES Utilisateur(id),
-    FOREIGN KEY (id_Organisation) REFERENCES Organisation(id)
+        id_Organization Int NOT NULL ,
+        id_Users Int NOT NULL,
+    FOREIGN KEY (id_Users) REFERENCES Users(id),
+    FOREIGN KEY (id_Organization) REFERENCES Organization(id)
 ); 
 
 #------------------------------------------------------------
-# Table: UtilisateurProposition
+# Table: UsersPost
 #------------------------------------------------------------
 
-CREATE TABLE UtilisateurProposition (
-        id_Proposition Int NOT NULL ,
-        id_Utilisateur Int NOT NULL,
-    FOREIGN KEY (id_Utilisateur) REFERENCES Utilisateur(id),
-    FOREIGN KEY (id_Proposition) REFERENCES Proposition(id)
+CREATE TABLE UsersPost (
+        id_Post Int NOT NULL ,
+        id_Users Int NOT NULL,
+    FOREIGN KEY (id_Users) REFERENCES Users(id),
+    FOREIGN KEY (id_Post) REFERENCES Post(id)
 ); 
 
 #------------------------------------------------------------
-# Table: OrgProposition
+# Table: OrgPost
 #------------------------------------------------------------
 
-CREATE TABLE OrgProposition (
-        id_Proposition Int NOT NULL ,
-        id_Organisation Int NOT NULL,
-    FOREIGN KEY (id_Organisation) REFERENCES Organisation(id),
-    FOREIGN KEY (id_Proposition) REFERENCES Proposition(id)
+CREATE TABLE OrgPost (
+        id_Post Int NOT NULL ,
+        id_Organization Int NOT NULL,
+    FOREIGN KEY (id_Organization) REFERENCES Organization(id),
+    FOREIGN KEY (id_Post) REFERENCES Post(id)
 ); 
 
 
 #------------------------------------------------------------
-# Table: PropositionLike
+# Table: PostLike
 #------------------------------------------------------------
 
-CREATE TABLE PropositionLike (
-        id_Proposition Int NOT NULL ,
-        id_Utilisateur Int NOT NULL ,
+CREATE TABLE PostLike (
+        id_Post Int NOT NULL ,
+        id_Users Int NOT NULL ,
         vote           BOOLEAN NOT NULL,
-    FOREIGN KEY (id_Utilisateur) REFERENCES Utilisateur(id),
-    FOREIGN KEY (id_Proposition) REFERENCES Proposition(id)
+    FOREIGN KEY (id_Users) REFERENCES Users(id),
+    FOREIGN KEY (id_Post) REFERENCES Post(id)
 ); 
 
 
 #------------------------------------------------------------
-# Table: PropositionComment
+# Table: PostComment
 #------------------------------------------------------------
 
-CREATE TABLE PropositionComment (
-        id_Proposition Int NOT NULL ,
-        id_Utilisateur Int NOT NULL ,
+CREATE TABLE PostComment (
+        id_Post Int NOT NULL ,
+        id_Users Int NOT NULL ,
         commentaire    Varchar (255) NOT NULL ,
         date           Int NOT NULL,
-    FOREIGN KEY (id_Utilisateur) REFERENCES Utilisateur(id),
-    FOREIGN KEY (id_Proposition) REFERENCES Proposition(id)
+    FOREIGN KEY (id_Users) REFERENCES Users(id),
+    FOREIGN KEY (id_Post) REFERENCES Post(id)
 ); 
 
 #------------------------------------------------------------
-# Table: PropositionSignalée
+# Table: PostReport
 #------------------------------------------------------------
 
-CREATE TABLE PropositionSignalee (
-        id_Proposition Int NOT NULL ,
-        id_Utilisateur Int NOT NULL ,
+CREATE TABLE PostReport (
+        id_Post Int NOT NULL ,
+        id_Users Int NOT NULL ,
         message    Varchar (255) NOT NULL ,
         date           Int NOT NULL,
-    FOREIGN KEY (id_Utilisateur) REFERENCES Utilisateur(id),
-    FOREIGN KEY (id_Proposition) REFERENCES Proposition(id)
+    FOREIGN KEY (id_Users) REFERENCES Users(id),
+    FOREIGN KEY (id_Post) REFERENCES Post(id)
 );
-

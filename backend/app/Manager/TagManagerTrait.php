@@ -10,8 +10,8 @@ Trait TagManagerTrait {
     /**
      * Permet de récupéré la liste des tags d'une proposition
      */
-    public function getTags(int $propositionId): array {
-        $requete = "SELECT id FROM `PropositionTags` WHERE id_Proposition = $propositionId";
+    public function getTags(int $postId): array {
+        $requete = "SELECT id_Post FROM `PostTags` WHERE id_Post = $postId";
         $this->setQuery($requete);
         $result = $this->querySelect();
 
@@ -21,7 +21,7 @@ Trait TagManagerTrait {
     }
 
     public function getOrganisationTags(int $orgId): array {
-        $requete = "SELECT id FROM `Tags` WHERE id_Organisation = $orgId";
+        $requete = "SELECT id FROM `Tags` WHERE id_Organization = $orgId";
         $this->setQuery($requete);
         $result = $this->querySelect();
 
@@ -49,11 +49,11 @@ Trait TagManagerTrait {
     }
 
     public function addTagToOrganisation(int $orgId, string $tagName) {
-        $requete = "INSERT INTO `Tags` (`nom`, `id_Organisation`) VALUES ('$tagName', '$orgId')";
+        $requete = "INSERT INTO `Tags` (`tagsName`, `id_Organization`) VALUES ('$tagName', '$orgId')";
         $this->setQuery($requete);
         $this->querySet();
 
-        $requete = "SELECT `id` FROM `Tags` WHERE `nom` = '$tagName' and `id_Organisation` = '$orgId'";
+        $requete = "SELECT `id` FROM `Tags` WHERE `tagsName` = '$tagName' and `id_Organization` = '$orgId'";
         $this->setQuery($requete);
         $result = $this->querySelect();
 
@@ -63,7 +63,7 @@ Trait TagManagerTrait {
     }
 
     public function getTagId(int $orgId, string $tagName): int{
-        $requete = "SELECT `id` FROM `Tags` WHERE `nom` = '$tagName' and `id_Organisation` = '$orgId'";
+        $requete = "SELECT `id` FROM `Tags` WHERE `tagsName` = '$tagName' and `id_Organization` = '$orgId'";
         $this->setQuery($requete);
         $result = $this->querySelect();
 
@@ -71,7 +71,7 @@ Trait TagManagerTrait {
     }
 
     public function addTagToProposition(int $propositionId, int $tagId) {
-        $requete = "INSERT INTO `PropositionTags` (`id`, `id_Proposition`) VALUES ('$tagId', '$propositionId')";
+        $requete = "INSERT INTO `PostTags` (`id_Tags`, `id_Post`) VALUES ('$tagId', '$propositionId')";
         $this->setQuery($requete);
         $this->querySet();
     }

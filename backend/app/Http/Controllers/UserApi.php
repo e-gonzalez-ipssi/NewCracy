@@ -119,21 +119,21 @@ class UserApi extends Api
     public function register(Request $request) {
         $params = $this->initialize(
             [
-                ["nom", REQUIRED, TYPE_STRING, $request->input('nom')],
-                ["prenom", REQUIRED, TYPE_STRING, $request->input('prenom')],
+                ["lastName", REQUIRED, TYPE_STRING, $request->input('lastName')],
+                ["firstName", REQUIRED, TYPE_STRING, $request->input('firstName')],
                 ["mail", REQUIRED, TYPE_MAIL, $request->input('mail')],
-                ["password", REQUIRED, TYPE_PASSWORD, $request->input('password')],
-                ["confirmPassword", REQUIRED, TYPE_PASSWORD, $request->input('confirmPassword')],
+                ["pwd", REQUIRED, TYPE_PASSWORD, $request->input('pwd')],
+                ["confirmPwd", REQUIRED, TYPE_PASSWORD, $request->input('confirmPwd')],
             ],
             self::NO_RIGHT, 
             false,
         );
         
         $this->connexionService->inscription(
-            $params['nom'],
-            $params['prenom'],
-            $params['password'],
-            $params['confirmPassword'],
+            $params['lastName'],
+            $params['firstName'],
+            $params['pwd'],
+            $params['confirmPwd'],
             $params['mail']
         );
         return $this->returnOutput($this->ack());

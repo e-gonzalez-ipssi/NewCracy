@@ -5,24 +5,26 @@ namespace App\Entity;
 use DateTime;
 use App\Entity\Tag;
 
-class Proposition
+class Post
 {
     protected int $id;
     protected User $author;
-    protected string $nom;
-    protected string $description;
+    protected string $title;
+    protected string $content;
+    protected string $img;
     protected array $tag = []; // ceci est une array contenant des tags
     protected int $date;
     protected int $like;
     protected int $dislike;
 
 
-    public function __construct(int $id, User $author, string $nom, string $description, array $tag, int $date, int $like, int $dislike)
+    public function __construct(int $id, User $author, string $title, string $content, string $img, array $tag, int $date, int $like, int $dislike)
     {
         $this->id = $id;
         $this->author = $author;
-        $this->nom = $nom;
-        $this->description = $description;
+        $this->title = $title;
+        $this->content = $content;
+        $this->img = $img;
         $this->tag = $tag;
         $this->date = $date;
         $this->like = $like;
@@ -45,19 +47,26 @@ class Proposition
         $this->author = $user;
     }
 
-    public function getNom():string{
-        return $this->nom;
+    public function getTitle():string{
+        return $this->title;
     }
 
-    public function setNom(string $nom){
-        $this->nom = $nom;
+    public function setTitle(string $title){
+        $this->title = $title;
     }
 
-    public function setDescription(string $description){
-        $this->description = $description;
+    public function setContent(string $content){
+        $this->content = $content;
     }
-    public function getDescription():string{
-        return $this->description;
+    public function getContent():string{
+        return $this->content;
+    }
+
+    public function setImg(string $img){
+        $this->img = $img;
+    }
+    public function getImgt():string{
+        return $this->img;
     }
 
     public function setTag(array $tag){
@@ -102,8 +111,9 @@ class Proposition
         return [
             "id" => $this->id,
             "author" => $this->author->arrayify(),
-            "nom" => $this->nom,
-            "description" => $this->description,
+            "title" => $this->title,
+            "content" => $this->content,
+            "img" => $this->img,
             "tags" => $tags,
             "id" => $this->id,
             "date" => $date,

@@ -3,8 +3,8 @@
 namespace App\Manager;
 
 use App\Entity\bd ;
-Use App\Entity\User;
-Use App\Entity\Proposition;
+use App\Entity\User;
+use App\Entity\Post;
 use App\Service\UserService;
 use Exception;
 
@@ -26,8 +26,8 @@ class PropositionManager extends Manager {
     /**
      * Cette fonction permet de récupéré une proposition exploitable en donnant son id
      */
-    public function getPropositionById(int $id): Proposition {
-        $requete = "SELECT * FROM `Proposition` WHERE id = $id";
+    public function getPropositionById(int $id): Post {
+        $requete = "SELECT * FROM `Post` WHERE id = $id";
         $this->setQuery($requete);
         $result = $this->querySelect();
 
@@ -55,14 +55,14 @@ class PropositionManager extends Manager {
      * Cette fonction permet de récupéré une proposition exploitable en donnant son id
      */
     public function getPropositionByOrgId(int $orgId): array {
-        $requete = "SELECT id_Proposition FROM `OrgProposition` WHERE id_Organisation = $orgId";
+        $requete = "SELECT id_Post FROM `OrgPost` WHERE id_Organization = $orgId";
         $this->setQuery($requete);
         $result = $this->querySelect();
 
         $propositions = [];
 
         foreach ($result as $propositionId) {
-            array_push($propositions, $this->getPropositionById($propositionId["id_Proposition"]));
+            array_push($propositions, $this->getPropositionById($propositionId["id_Post"]));
         }
 
         return $propositions;
@@ -73,21 +73,21 @@ class PropositionManager extends Manager {
      */
     public function createProposition(int $orgId, int $authorId, string $title, string $description): int{
         $timestamp = time();
-        $requete = "INSERT INTO `Proposition` (`nom`, `description`, `date`) VALUES ('$title', '$description', '$timestamp')";
+        $requete = "INSERT INTO `Post` (`title`, `content`, `date`) VALUES ('$title', '$description', '$timestamp')";
         $this->setQuery($requete);
         $this->querySet();
 
-        $requete = "SELECT id FROM `Proposition` WHERE date = $timestamp";
+        $requete = "SELECT id FROM `Post` WHERE date = $timestamp";
         $this->setQuery($requete);
         $result = $this->querySelect();
 
         $propositionId = $result[0]['id'];
 
-        $requete = "INSERT INTO `OrgProposition` (`id_Proposition`, `id_Organisation`) VALUES ($propositionId, $orgId)";
+        $requete = "INSERT INTO `OrgPost` (`id_Post`, `id_Organization`) VALUES ($propositionId, $orgId)";
         $this->setQuery($requete);
         $this->querySet();
 
-        $requete = "INSERT INTO `UtilisateurProposition` (`id_Proposition`, `id_Utilisateur`) VALUES ($propositionId, $authorId);";
+        $requete = "INSERT INTO `UsersPost` (`id_Post`, `id_Users`) VALUES ($propositionId, $authorId);";
         $this->setQuery($requete);
         $this->querySet();
 
@@ -98,7 +98,7 @@ class PropositionManager extends Manager {
      * Fonction permettant de récupéré l'autheur d'une proposition
      */
     private function getAuthor(int $propositionId): User {
-        $requete = "SELECT id_Utilisateur FROM `UtilisateurProposition` WHERE id_Proposition = $propositionId";
+        $requete = "SELECT id_Users FROM `UsersPost` WHERE id_Post = $propositionId";
         $this->setQuery($requete);
         $result = $this->querySelect();
 
@@ -110,6 +110,6 @@ class PropositionManager extends Manager {
             throw new Exception("to-many-author-to-message");
         }
 
-        return $this->userService->getUserById($result[0]["id_Utilisateur"]);
+        return $this->userService->getUserById($result[0]["id_Users"]);
     }
 }

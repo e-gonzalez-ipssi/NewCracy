@@ -2,7 +2,7 @@
 
 namespace App\Manager;
 
-use App\Entity\Organisation;
+use App\Entity\Organization;
 use App\Manager\TagManagerTrait;
 use Exception;
 
@@ -18,12 +18,12 @@ class OrganisationManager extends Manager {
      */
     public function createOrganisation(string $nom, string $description, string $lienSite , int $userId): array {
         /** @var string $newQuery */
-        $newQuery = "INSERT INTO `Organisation` (`nom`, `description`, `lienSite`) VALUES ('$nom', '$description', '$lienSite')";
+        $newQuery = "INSERT INTO `Organization` (`orgName`, `content`, `orgUrl`) VALUES ('$nom', '$description', '$lienSite')";
         $this->setQuery($newQuery);
         $this->querySet();
 
         /** @var string $request */
-        $request = "SELECT id FROM `Organisation`  WHERE nom = '$nom'";
+        $request = "SELECT id FROM `Organization`  WHERE orgName = '$nom'";
         $this->setQuery($request);
         $orgId = $this->querySelect()[0]["id"];
 
@@ -32,14 +32,9 @@ class OrganisationManager extends Manager {
         }
 
         /** @var string $request2 */
-        $request2 = 
-            "INSERT INTO `OrgAdmin` (`id_Utilisateur`, `id_Organisation`) VALUES (
-                $userId, 
-                $orgId
-            )";
+        $request2 = "INSERT INTO `OrgAdmin` (`id_Users`,`id_Organization`) VALUES ($userId, $orgId)";
         $this->setQuery($request2);
         $this->querySet();
-
         $this->addUserToOrganisation($orgId, $userId);
 
         return $this->ack("L'Organisation a bien été ajouté a la base de donnée");
@@ -53,7 +48,7 @@ class OrganisationManager extends Manager {
      */
     public function addUserToOrganisation(string $organisationId , string $userId): array {
         /** @var string $request2 */    
-        $request2 = "INSERT INTO `OrgMember` (`id_Organisation`, `id_Utilisateur`) VALUES ($organisationId, $userId)";
+        $request2 = "INSERT INTO `OrgMember` (`id_Organization`, `id_Users`) VALUES ($organisationId, $userId)";
         $this->setQuery($request2);
         $this->querySet();
 
@@ -68,7 +63,7 @@ class OrganisationManager extends Manager {
      */
     public function deleteUserToOrganisation(string $organisationId , string $userId): array {
         /** @var string $request2 */    
-        $request2 = "DELETE FROM `OrgMember`  WHERE id_Organisation = $organisationId  AND id_Utilisateur = $userId ";
+        $request2 = "DELETE FROM `OrgMember` WHERE id_Organization = $organisationId  AND id_Users = $userId";
         $this->setQuery($request2);
         $this->querySet();
 
@@ -84,12 +79,12 @@ class OrganisationManager extends Manager {
      * 
      * @throw Exception Relève une expetion si l'Organisation n'a pas été trouvé
      */
-    public function getOrganisationById(int $id): Organisation {
+    public function getOrganisationById(int $id): Organization {
         if (!empty($this->inventory[$id])) {
             return $this->inventory[$id];
         }
 
-        $newQuery = "SELECT `id`, `nom`, `description`, `lienSite` FROM `Organisation` WHERE id = $id";
+        $newQuery = "SELECT * FROM `Organization` WHERE id = $id";
         $this->setQuery($newQuery);
 
         $result = $this->querySelect();
@@ -112,8 +107,8 @@ class OrganisationManager extends Manager {
      * 
      * @throw Exception Relève une expetion si l'Organisation n'a pas été trouvé
      */
-    public function getOrganisationByName(string $nom): Organisation {
-        $newQuery = "SELECT `id`, `nom`, `description`, `lienSite` FROM `Organisation` WHERE nom = '$nom'";
+    public function getOrganisationByName(string $nom): Organization {
+        $newQuery = "SELECT * FROM `Organization` WHERE orgName = '$nom'";
         $this->setQuery($newQuery);
 
         $result = $this->querySelect();
@@ -131,15 +126,15 @@ class OrganisationManager extends Manager {
      * @return string Cette fonction retourne ou un message d'erreur ou un message disant que tout c'est bien passer
      * 
      */
-    public function deleteOrganisation(Organisation $org, string $userName): array {
-        $nom = $org->getNom();
+    public function deleteOrganisation(Organization $org, string $userName): array {
+        $nom = $org->getOrgName();
         /** @var string $newQuery */
-        $newQuery = "DELETE FROM `OrgAdmin`  WHERE id_Organisation = (SELECT id FROM Organisation WHERE nom = $nom) AND 
-        id_Utilisateur = (SELECT Id FROM Utilisateur WHERE nom = $userName)";
+        $newQuery = "DELETE FROM `OrgAdmin`  WHERE id_Organization = (SELECT id FROM Organization WHERE orgName = $nom) AND 
+        id_Users = (SELECT id FROM Users WHERE lastName = $userName)";
         $this->setQuery($newQuery);
         $this->querySet();
         /** @var string $request */
-        $request = "DELETE FROM `Organisation`  WHERE nom = $nom ;";
+        $request = "DELETE FROM `Organization`  WHERE orgName = $nom ;";
         $this->setQuery($request);
         $this->querySet();
 
@@ -155,7 +150,7 @@ class OrganisationManager extends Manager {
      */
     public function getOrganisationsFromUser(int $userId): array {
         /** @var string $newQuery */
-        $newQuery = "SELECT `id_Organisation` FROM `OrgMember` WHERE id_Utilisateur = $userId";
+        $newQuery = "SELECT `id_Organization` FROM `OrgMember` WHERE id_Users = $userId";
         $this->setQuery($newQuery);
         $result = $this->querySelect();
         
@@ -171,7 +166,7 @@ class OrganisationManager extends Manager {
      */
     public function getUsersFromOrganisation(int $orgId): array {
         /** @var string $newQuery */
-        $newQuery = "SELECT `id_Utilisateur` FROM `OrgMember` WHERE id_Organisation = $orgId";
+        $newQuery = "SELECT `id_Users` FROM `OrgMember` WHERE id_Organization = $orgId";
         $this->setQuery($newQuery);
         $result = $this->querySelect();
         
@@ -187,7 +182,7 @@ class OrganisationManager extends Manager {
      */
     public function getAdminsFromOrganisation(int $orgId): array {
         /** @var string $newQuery */
-        $newQuery = "SELECT `id_Utilisateur` FROM `OrgAdmin` WHERE id_Organisation = $orgId";
+        $newQuery = "SELECT `id_Users` FROM `OrgAdmin` WHERE id_Organization = $orgId";
         $this->setQuery($newQuery);
         $result = $this->querySelect();
         
@@ -202,7 +197,7 @@ class OrganisationManager extends Manager {
      */
     public function addAdminToOrganisation(string $organisationId , string $userId): array {
         /** @var string $request2 */    
-        $request2 = "INSERT INTO `OrgAdmin` (`id_Organisation`, `id_Utilisateur`) VALUES ($organisationId, $userId)";
+        $request2 = "INSERT INTO `OrgAdmin` (`id_Organization`, `id_Users`) VALUES ($organisationId, $userId)";
         $this->setQuery($request2);
         $this->querySet();
 

@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Entity\Organisation;
+use App\Entity\Organization;
 use App\Entity\User;
 use Illuminate\Http\Request;
 use Exception;
 
-class OrganisationApi extends Api
+class OrganizationApi extends Api
 {
     private const NO_RIGHT = 1;
     private const IS_ORG_MEMBER = 2;
     private const IS_NOT_ORG_MEMBER = 3;
     private const IS_ORG_ADMIN = 4;
 
-    private Organisation $org;
+    private Organization $org;
 
     public function __construct()
     {
@@ -127,14 +127,14 @@ class OrganisationApi extends Api
     public function addOrgAdmin(Request $request, int $orgId) {
         $params = $this->initialize(
             [                
-                ["mail", REQUIRED, TYPE_MAIL, $request->input('mail')],
+                ["orgMail", REQUIRED, TYPE_MAIL, $request->input('orgMail')],
             ], 
             self::IS_ORG_ADMIN, 
             true, 
             $orgId
         );
 
-        $userToAdd = $this->userService->getUserByMail($params["mail"]);
+        $userToAdd = $this->userService->getUserByMail($params["orgMail"]);
         $this->orgService->addAdminToOrganisation($this->org, $userToAdd);
         return $this->returnOutput($this->ack());
     }
@@ -163,9 +163,12 @@ class OrganisationApi extends Api
     public function createOrg(Request $request) {
         $params = $this->initialize(
             [
-                ["nom", REQUIRED, TYPE_STRING, $request->input('nom')],
-                ["description", NOT_REQUIRED, TYPE_STRING, $request->input('description'), 'La super description de mon organisation'],
-                ["lienSite", NOT_REQUIRED, TYPE_STRING, $request->input('lienSite'), 'www.neocracy.fr'],
+                ["orgName", REQUIRED, TYPE_STRING, $request->input('orgName')],
+                ["content", NOT_REQUIRED, TYPE_STRING, $request->input('content'), 'La super content de mon organisation'],
+                ["orgUrl", NOT_REQUIRED, TYPE_STRING, $request->input('orgUrl'), 'www.neocracy.fr'],
+                ["orgMail", NOT_REQUIRED, TYPE_STRING, $request->input('content'), 'mail@neocracy.fr'],
+                ["phone", NOT_REQUIRED, TYPE_STRING, $request->input('phone'), '0123456789'],
+                ["backImg", NOT_REQUIRED, TYPE_STRING, $request->input('backImg'), 'image de ma baniière d\'organisation '],
             ],
             self::NO_RIGHT, 
             true
@@ -173,9 +176,12 @@ class OrganisationApi extends Api
 
         $this->orgService->createOrganisation(
             $this->me,
-            $params["nom"],
-            $params["description"],
-            $params["lienSite"],
+            $params["orgName"],
+            $params["content"],
+            $params["orgUrl"],
+            $params["orgMail"],
+            $params["phone"],
+            $params["backImg"],
         );
         return $this->returnOutput($this->ack());
     }

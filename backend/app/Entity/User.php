@@ -5,71 +5,71 @@ namespace App\Entity;
 class  User {
 
     private int $id;
-    private string $nom;
-    private string $prenom;
+    private string $lastName;
+    private string $firstName;
     private string $mail;
-    private string $telephone;
-    private string $photo;
+    private string $phone;
+    private string $img;
     private bool $isAdmin;
 
     public function __construct (  
         int $id,
-        string $nom,
-        string $prenom,
+        string $lastName,
+        string $firstName,
         string $mail,
-        ?string $telephone = null,
-        ?string $photo = null,
+        ?string $phone = null,
+        ?string $img = null,
         bool $isAdmin = false
     ) {
         $this->id = $id;
-        $this->nom = $nom;
-        $this->prenom = $prenom;
+        $this->lastName = $lastName;
+        $this->firstName = $firstName;
         $this->mail = $mail;
         
-        if(!empty($telephone)) {
-            $this->telephone = $telephone;
+        if(!empty($phone)) {
+            $this->phone = $phone;
         }
 
-        if(!empty($photo)) {
-            $this->photo = $photo;
+        if(!empty($img)) {
+            $this->img = $img;
         }
 
         $this->isAdmin = $isAdmin;
     }
 
     public function arrayify(): array {
-        if(!empty($this->photo)) {
-            if(empty($this->telephone)){
+        if(!empty($this->img)) {
+            if(empty($this->phone)){
                 return [
                     "id" => $this->id,
-                    "nom" => $this->nom,
-                    "prenom" => $this->prenom,
+                    "lastName" => $this->lastName,
+                    "firstName" => $this->firstName,
                     "mail" => $this->mail,
-                    "photo" => $this->photo,
+                    "img" => $this->img,
                 ];
             }
             return [
                 "id" => $this->id,
-                "nom" => $this->nom,
-                "prenom" => $this->prenom,
+                "lastName" => $this->lastName,
+                "firstName" => $this->firstName,
                 "mail" => $this->mail,
-                "telephone" => $this->telephone,
-                "photo" => $this->photo,
+                "phone" => $this->phone,
+                "img" => $this->img,
             ];
         }
-        elseif(!empty($this->telephone)){
+        elseif(!empty($this->phone)){
             return [
                 "id" => $this->id,
-                "nom" => $this->nom,
-                "prenom" => $this->prenom,
+                "lastName" => $this->lastName,
+                "firstName" => $this->firstName,
                 "mail" => $this->mail,
-                "telephone" => $this->telephone,
+                "phone" => $this->phone,
             ];
         }
         return [
             "id" => $this->id,
-            "nom" => $this->nom,
-            "prenom" => $this->prenom,
+            "lastName" => $this->lastName,
+            "firstName" => $this->firstName,
             "mail" => $this->mail,
         ];
     }
@@ -78,20 +78,20 @@ class  User {
         return $this->id;
     }
 
-    public function getNom(): string {
-        return $this->nom;
+    public function getLastName(): string {
+        return $this->lastName;
     }
 
-    public function setNom(string $nom) {
-        $this->nom = $nom;
+    public function setLastName(string $lastName) {
+        $this->lastName = $lastName;
     }
 
-    public function getPrenom(): string {
-        return $this->prenom;
+    public function getFirstName(): string {
+        return $this->firstName;
     }
 
-    public function setPrenom(string $prenom) {
-        $this->prenom = $prenom;
+    public function setFirstName(string $firstName) {
+        $this->firstName = $firstName;
     }
 
     public function getMail(): string {
@@ -102,20 +102,20 @@ class  User {
         $this->mail = $mail;
     }
 
-    public function getTelephone(): string {
-        return $this->telephone;
+    public function getPhone(): string {
+        return $this->phone;
     }
 
-    public function setTelephone(string $telephone) {
-        $this->telephone = $telephone;
+    public function setPhone(string $phone) {
+        $this->phone = $phone;
     }
 
-    public function getPhoto(): string {
-        return $this->photo;
+    public function getImg(): string {
+        return $this->img;
     }
 
-    public function setPhoto(string $photo) {
-        $this->photo = $photo;
+    public function setImg(string $img) {
+        $this->img = $img;
     }
 
     public function isAdmin(): bool {

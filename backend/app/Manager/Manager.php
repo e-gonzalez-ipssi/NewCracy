@@ -3,8 +3,8 @@
 namespace App\Manager;
 
 use App\Entity\bd ;
-use App\Entity\Organisation ;
-use App\Entity\Proposition;
+use App\Entity\Organization ;
+use App\Entity\Post;
 use App\Entity\User;
 use Exception;
 
@@ -85,23 +85,29 @@ abstract class  Manager
         ];
     }
 
-    protected function fromQueryToOrganisation($result): Organisation {
-        return new Organisation(
+    protected function fromQueryToOrganisation($result): Organization {
+        return new Organization(
             $result[0]["id"],
-            $result[0]["nom"],
-            $result[0]["description"],
-            $result[0]["lienSite"],
+            $result[0]["orgName"],
+            $result[0]["content"],
+            $result[0]["orgUrl"],
+            $result[0]["orgMail"],
+            $result[0]["phone"],
+            $result[0]["backImg"],
         );
     }
 
     protected function fromQueryToOrganisations($result): array {
         $organisations = [];
         foreach($result as $organisation) {
-            $newOrganisation = new Organisation(
+            $newOrganisation = new Organization(
                 $organisation["id"],
-                $organisation["nom"],
-                $organisation["description"],
-                $organisation["lienSite"],
+                $organisation["orgName"],
+                $organisation["content"],
+                $organisation["orgUrl"],
+                $organisation["orgMail"],
+                $organisation["phone"],
+                $organisation["backImg"],
             );
             array_push($organisations, $newOrganisation);
         }
@@ -111,11 +117,11 @@ abstract class  Manager
     protected function fromQueryToUser(array $result): User {
         return new User(
             $result[0]["id"],
-            $result[0]["nom"],
-            $result[0]["prenom"],
+            $result[0]["lastName"],
+            $result[0]["firstName"],
             $result[0]["mail"],
-            $result[0]["tel"],
-            $result[0]["photo"],
+            $result[0]["phone"],
+            $result[0]["img"],
             $result[0]["isAdmin"]
         );
     }
@@ -125,11 +131,11 @@ abstract class  Manager
         foreach($result as $user) {
             $newUser = new User(
                 $user["id"],
-                $user["nom"],
-                $user["prenom"],
+                $user["lastName"],
+                $user["firstName"],
                 $user["mail"],
-                $user["tel"],
-                $user["photo"],
+                $user["phone"],
+                $user["img"],
                 $user["isAdmin"]
             );
             array_push($users, $newUser);
@@ -139,18 +145,19 @@ abstract class  Manager
 
     protected function fromQueryToPropositions(array $result, User $author, array $tags, int $like, int $dislike): array {
         $return = [];
-        foreach($result as $proposition) {
-            $newProposition = new Proposition(
-                $proposition["id"],
+        foreach($result as $post) {
+            $newPost = new Post(
+                $post["id"],
                 $author,
-                $proposition["nom"],
-                $proposition["description"],
+                $post["title"],
+                $post["content"],
+                $post["img"],
                 $tags,
-                $proposition["date"],
+                $post["date"],
                 $like,
                 $dislike,
             );
-            array_push($return, $newProposition);
+            array_push($return, $newPost);
         }
         return $return;
     }

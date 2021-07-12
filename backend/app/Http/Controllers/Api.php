@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Entity\User;
 use App\Entity\bd;
-use App\Entity\Proposition;
+use App\Entity\Post;
 use App\Manager\OrganisationManager;
 use App\Manager\PropositionManager;
 use App\Manager\UserManager;
