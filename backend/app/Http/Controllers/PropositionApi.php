@@ -280,4 +280,22 @@ class PropositionApi extends Api
         return $return;
     }
 
+
+    /**
+     * @route post(api/proposition/{id}/commentaire)
+     */
+    public function createCommentaireProposition(Request $request, int $id) {
+        $params = $this->initialize(
+            [
+                ["message", REQUIRED, TYPE_STRING, $request->input('message')],
+            ],
+            self::NO_RIGHT,
+            true
+        );
+
+        $proposition = $this->propositionService->getPropositionById($id);
+        $this->propositionService->createCommentaireProposition($proposition, $this->me, $params["message"]);
+        return $this->returnOutput($this->ack());
+    }
+
 }

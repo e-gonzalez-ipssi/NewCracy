@@ -13,6 +13,7 @@ class PropositionManager extends Manager {
     use TagManagerTrait;
     use LikeManagerTrait;
     use ReportManagerTrait;
+    use CommentaireManagerTrait;
 
     protected UserService $userService;
 

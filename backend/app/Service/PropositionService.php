@@ -21,6 +21,13 @@ class  PropositionService {
         $this->userService = $userService;
     }
 
+    /*
+    //Todo
+    * Back Proposition :
+    * Manque les autres services pour supprimer, maj une proposition 
+    */
+
+
     public function createProposition(Organisation $org, User $author, string $title, string $description, string $tags) {
         // on créer une proposition
         $propositionId = $this->propositionManager->createProposition($org->getId(), $author->getId(), $title, $description);
@@ -172,4 +179,30 @@ class  PropositionService {
         $reports = $this->propositionManager->getReports();
         return $reports;
     }
+
+   
+    public function createCommentaireProposition(Proposition $proposition, User $author, string $message) {
+        // TO DO : vérifier que le commentaire sois valide
+
+        // on créer un commentaire pour une proposition
+        $propositionId = $this->propositionManager->createCommentaire($proposition->getId(), $author->getId() ,$message);
+    }
+
+    public function readCommentaireProposition(Proposition $proposition) {
+        // on lit le commentaire pour une proposition
+        $propositionId = $this->propositionManager->readCommentaire($proposition->getId());
+    }
+
+    public function updateCommentaireProposition(Proposition $proposition, string $message) {
+        // TO DO : vérifier que le commentaire sois valide
+
+        // on fait une maj du commentaire pour une proposition
+        $propositionId = $this->propositionManager->updateCommentaire($proposition->getId(),$message);
+    }
+    public function deleteCommentaireProposition(Proposition $proposition) {
+        // on supprime un commentaire pour une proposition
+        $propositionId = $this->propositionManager->deleteCommentaire($proposition->getId());
+    }
+
+
 }
